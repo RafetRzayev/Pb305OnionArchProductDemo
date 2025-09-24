@@ -19,7 +19,11 @@ public class ProductService : IProductService
         var product = new Product
         {
             Name = createProductDto.Name,
-            Price = createProductDto.Price
+            Price = createProductDto.Price,
+            ProductTags = createProductDto.TagIds?.Select(tagId => new ProductTag
+            {
+                TagId = tagId
+            }).ToList() ?? new List<ProductTag>()
         };
 
         var createdProduct = await _productRepository.AddProductAsync(product);
@@ -45,7 +49,12 @@ public class ProductService : IProductService
         {
             Id = p.Id,
             Name = p.Name,
-            Price = p.Price
+            Price = p.Price,
+            Tags = p.ProductTags?.Select(pt => new TagDto
+            {
+                Id = pt.Tag == null ? 0:pt.Tag.Id,
+                Name = pt.Tag == null ? string.Empty : pt.Tag.Name
+            }).ToList() ?? new List<TagDto>()
         });
 
         return productDtos;
@@ -62,7 +71,12 @@ public class ProductService : IProductService
         {
             Id = product.Id,
             Name = product.Name,
-            Price = product.Price
+            Price = product.Price,
+            Tags = product.ProductTags?.Select(pt => new TagDto
+            {
+                Id = pt.Tag == null ? 0 : pt.Tag.Id,
+                Name = pt.Tag == null ? string.Empty : pt.Tag.Name
+            }).ToList() ?? new List<TagDto>()
         };
 
         return productDto;
@@ -74,9 +88,19 @@ public class ProductService : IProductService
         {
             Id = updateProductDto.Id,
             Name = updateProductDto.Name,
-            Price = updateProductDto.Price
+            Price = updateProductDto.Price,
+            ProductTags = updateProductDto.NewTagIds?.Select(tagId => new ProductTag
+            {
+                TagId = tagId
+            }).ToList() ?? new List<ProductTag>()
         };
 
         return _productRepository.UpdateProductAsync(product);
     }
+
+    public Task RemoveTagsFromProductAsync(RemoveTagsFromProductDto removeTagsFromProductDto)
+    {
+        return _productRepository.RemoveTagsFromProductAsync(removeTagsFromProductDto.ProductId, removeTagsFromProductDto.TagIds);
+    }
+
 }

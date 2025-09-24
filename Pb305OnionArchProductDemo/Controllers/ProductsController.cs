@@ -55,5 +55,12 @@ namespace Pb305OnionArchProductDemo.API.Controllers
             await _productService.DeleteProductAsync(id);
             return NoContent();
         }
+
+        [HttpPost("removeTagsFromProduct")]
+        public async Task<IActionResult> RemoveTagsFromProduct([FromBody] RemoveTagsFromProductDto removeTagsFromProductDto)
+        {
+            await _productService.RemoveTagsFromProductAsync(removeTagsFromProductDto);
+            return NoContent();
+        }
     }
 }

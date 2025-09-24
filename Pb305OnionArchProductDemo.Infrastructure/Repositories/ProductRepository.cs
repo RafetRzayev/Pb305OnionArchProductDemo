@@ -39,14 +39,20 @@ public class ProductRepository : IProductRepository
 
     public async Task<IEnumerable<Product>> GetAllProductsAsync()
     {
-        var products = await _dbContext.Products.ToListAsync();
+        var products = await _dbContext.Products
+            .Include(x => x.ProductTags)
+            .ThenInclude(x => x.Tag)
+            .ToListAsync();
 
         return products;
     }
 
     public async Task<Product?> GetProductByIdAsync(int id)
     {
-        var product = await _dbContext.Products.FindAsync(id);
+        var product = await _dbContext.Products
+            .Include(x => x.ProductTags).
+            ThenInclude(x => x.Tag)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         return product;
     }
@@ -62,6 +68,14 @@ public class ProductRepository : IProductRepository
             throw new Exception($"Product not found, with given id  : {product.Id}");
 
         _dbContext.Products.Update(product);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task RemoveTagsFromProductAsync(int productId, List<int> tagIds)
+    {
+        var productTags = _dbContext.ProductTags
+            .Where(pt => pt.ProductId == productId && tagIds.Contains(pt.TagId));
+        _dbContext.ProductTags.RemoveRange(productTags);
         await _dbContext.SaveChangesAsync();
     }
 }
