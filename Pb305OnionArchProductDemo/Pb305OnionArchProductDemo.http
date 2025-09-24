@@ -1,0 +1,6 @@
+@Pb305OnionArchProductDemo_HostAddress = http://localhost:5258
+
+GET {{Pb305OnionArchProductDemo_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
