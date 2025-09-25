@@ -1,8 +1,7 @@
 ﻿namespace Pb305OnionArchProductDemo.Domain.Entities;
 
-public class ProductTag
+public class ProductTag : Entity
 {
-    public int Id { get; set; }
     public int ProductId { get; set; }
     public Product? Product { get; set; }
     public int TagId { get; set; }

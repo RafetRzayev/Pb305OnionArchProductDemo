@@ -15,10 +15,15 @@ public static class InfrastructureServiceRegistration
     {
         services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), options =>
+            {
+                options.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName); 
+            });
         });
 
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<ITagRepository, TagRepository>();
+        services.AddScoped(typeof(IRepository<>), typeof(EfCoreRepository<>));
+        services.AddScoped<DataInitializer>();
     }
 }

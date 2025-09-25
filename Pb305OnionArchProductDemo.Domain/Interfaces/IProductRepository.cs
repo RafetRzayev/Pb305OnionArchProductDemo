@@ -2,12 +2,7 @@
 
 namespace Pb305OnionArchProductDemo.Domain.Interfaces;
 
-public interface IProductRepository
+public interface IProductRepository : IRepository<Product>
 {
-    Task<IEnumerable<Product>> GetAllProductsAsync();
-    Task<Product?> GetProductByIdAsync(int id);
-    Task<Product> AddProductAsync(Product product);
-    Task UpdateProductAsync(Product product);
-    Task DeleteProductAsync(int id);
     Task RemoveTagsFromProductAsync(int productId, List<int> tagIds);
 }

@@ -5,39 +5,16 @@ using Pb305OnionArchProductDemo.Infrastructure.DataContext;
 
 namespace Pb305OnionArchProductDemo.Infrastructure.Repositories;
 
-public class ProductRepository : IProductRepository
+public class ProductRepository : EfCoreRepository<Product>, IProductRepository
 {
     private readonly AppDbContext _dbContext;
 
-    public ProductRepository(AppDbContext dbContext)
+    public ProductRepository(AppDbContext dbContext) : base(dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task<Product> AddProductAsync(Product product)
-    {
-        var entityEntry = await _dbContext.Products.AddAsync(product);
-        await _dbContext.SaveChangesAsync();
-
-        return entityEntry.Entity;
-    }
-
-    public async Task DeleteProductAsync(int id)
-    {
-        var product = _dbContext.Products.Find(id);
-
-        if (product != null)
-        {
-            _dbContext.Products.Remove(product);
-            await _dbContext.SaveChangesAsync();
-
-            return;
-        }
-
-        throw new Exception($"Product not found, with given id  : {id}");
-    }
-
-    public async Task<IEnumerable<Product>> GetAllProductsAsync()
+    public override async Task<IEnumerable<Product>> GetAllAsync()
     {
         var products = await _dbContext.Products
             .Include(x => x.ProductTags)
@@ -47,29 +24,62 @@ public class ProductRepository : IProductRepository
         return products;
     }
 
-    public async Task<Product?> GetProductByIdAsync(int id)
-    {
-        var product = await _dbContext.Products
-            .Include(x => x.ProductTags).
-            ThenInclude(x => x.Tag)
-            .FirstOrDefaultAsync(x => x.Id == id);
+    //public async Task<Product> AddProductAsync(Product product)
+    //{
+    //    var entityEntry = await _dbContext.Products.AddAsync(product);
+    //    await _dbContext.SaveChangesAsync();
 
-        return product;
-    }
+    //    return entityEntry.Entity;
+    //}
 
-    public async Task UpdateProductAsync(Product product)
-    {
-        var existingProduct = await _dbContext
-            .Products
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x=>x.Id == product.Id);
+    //public async Task DeleteProductAsync(int id)
+    //{
+    //    var product = _dbContext.Products.Find(id);
 
-        if (existingProduct == null)
-            throw new Exception($"Product not found, with given id  : {product.Id}");
+    //    if (product != null)
+    //    {
+    //        _dbContext.Products.Remove(product);
+    //        await _dbContext.SaveChangesAsync();
 
-        _dbContext.Products.Update(product);
-        await _dbContext.SaveChangesAsync();
-    }
+    //        return;
+    //    }
+
+    //    throw new Exception($"Product not found, with given id  : {id}");
+    //}
+
+    //public async Task<IEnumerable<Product>> GetAllProductsAsync()
+    //{
+    //    var products = await _dbContext.Products
+    //        .Include(x => x.ProductTags)
+    //        .ThenInclude(x => x.Tag)
+    //        .ToListAsync();
+
+    //    return products;
+    //}
+
+    //public async Task<Product?> GetProductByIdAsync(int id)
+    //{
+    //    var product = await _dbContext.Products
+    //        .Include(x => x.ProductTags).
+    //        ThenInclude(x => x.Tag)
+    //        .FirstOrDefaultAsync(x => x.Id == id);
+
+    //    return product;
+    //}
+
+    //public async Task UpdateProductAsync(Product product)
+    //{
+    //    var existingProduct = await _dbContext
+    //        .Products
+    //        .AsNoTracking()
+    //        .FirstOrDefaultAsync(x=>x.Id == product.Id);
+
+    //    if (existingProduct == null)
+    //        throw new Exception($"Product not found, with given id  : {product.Id}");
+
+    //    _dbContext.Products.Update(product);
+    //    await _dbContext.SaveChangesAsync();
+    //}
 
     public async Task RemoveTagsFromProductAsync(int productId, List<int> tagIds)
     {

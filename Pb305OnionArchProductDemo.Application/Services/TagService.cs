@@ -1,77 +1,33 @@
-﻿using Pb305OnionArchProductDemo.Application.Dtos;
+﻿using AutoMapper;
+using Pb305OnionArchProductDemo.Application.Dtos;
+using Pb305OnionArchProductDemo.Application.Services;
 using Pb305OnionArchProductDemo.Domain.Entities;
+using Pb305OnionArchProductDemo.Domain.Interfaces;
 using Pb305OnionArchTagDemo.Application.Interfaces;
 using Pb305OnionArchTagDemo.Domain.Interfaces;
 
 namespace Pb305OnionArchTagDemo.Application.Services;
 
-public class TagService : ITagService
+public class TagService : CrudService<TagDto, CreateTagDto, UpdateTagDto, Tag>, ITagService
 {
     private readonly ITagRepository _tagRepository;
 
-    public TagService(ITagRepository tagRepository)
+    public TagService(IRepository<Tag> repository, IMapper mapper, ITagRepository tagRepository) : base(repository, mapper)
     {
         _tagRepository = tagRepository;
     }
 
-    public async Task<TagDto> AddTagAsync(CreateTagDto createTagDto)
+    public async override Task UpdateAsync(UpdateTagDto updateDto)
     {
-        var tag = new Tag
+        var existingTag = await _tagRepository.GetByIdAsync(updateDto.Id);
+
+        if (existingTag == null)
         {
-            Name = createTagDto.Name,
-        };
+            throw new KeyNotFoundException($"Tag with ID {updateDto.Id} not found.");
+        }
 
-        var createdTag = await _tagRepository.AddTagAsync(tag);
-
-        return new TagDto
-        {
-            Id = createdTag.Id,
-            Name = createdTag.Name,
-        };
-    }
-
-    public async Task DeleteTagAsync(int id)
-    {
-        await _tagRepository.DeleteTagAsync(id);
-    }
-
-    public async Task<IEnumerable<TagDto>> GetAllTagsAsync()
-    {
-        var tags = await _tagRepository.GetAllTagsAsync();
-
-        var tagDtos = tags.Select(p => new TagDto
-        {
-            Id = p.Id,
-            Name = p.Name,
-        });
-
-        return tagDtos;
-    }
-
-    public async Task<TagDto?> GetTagByIdAsync(int id)
-    {
-        var tag = await _tagRepository.GetTagByIdAsync(id);
-
-        if (tag == null)
-            return null;
-
-        var tagDto = new TagDto
-        {
-            Id = tag.Id,
-            Name = tag.Name,
-        };
-
-        return tagDto;
-    }
-
-    public Task UpdateTagAsync(UpdateTagDto updateTagDto)
-    {
-        var tag = new Tag
-        {
-            Id = updateTagDto.Id,
-            Name = updateTagDto.Name,
-        };
-
-        return _tagRepository.UpdateTagAsync(tag);
+        existingTag = Mapper.Map(updateDto, existingTag);
+        //existingTag = Mapper.Map<Tag>(updateDto); exception will be thrown because same id tracking entity is already being tracked
+        await _tagRepository.UpdateAsync(existingTag);
     }
 }

@@ -1,13 +1,9 @@
 ﻿using Pb305OnionArchProductDemo.Application.Dtos;
+using Pb305OnionArchProductDemo.Domain.Entities;
 
 namespace Pb305OnionArchProductDemo.Application.Interfaces;
 
-public interface IProductService
+public interface IProductService : ICrudService<ProductDto, CreateProductDto, UpdateProductDto, Product>
 {
-    Task<IEnumerable<ProductDto>> GetAllProductsAsync();
-    Task<ProductDto?> GetProductByIdAsync(int id);
-    Task<ProductDto> AddProductAsync(CreateProductDto createProductDto);
-    Task UpdateProductAsync(UpdateProductDto updateProductDto);
-    Task DeleteProductAsync(int id);
     Task RemoveTagsFromProductAsync(RemoveTagsFromProductDto removeTagsFromProductDto);
 }

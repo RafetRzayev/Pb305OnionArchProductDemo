@@ -1,12 +1,10 @@
 ﻿using Pb305OnionArchProductDemo.Application.Dtos;
+using Pb305OnionArchProductDemo.Application.Interfaces;
+using Pb305OnionArchProductDemo.Domain.Entities;
 
 namespace Pb305OnionArchTagDemo.Application.Interfaces;
 
-public interface ITagService
+public interface ITagService : ICrudService<TagDto, CreateTagDto, UpdateTagDto, Tag>
 {
-    Task<IEnumerable<TagDto>> GetAllTagsAsync();
-    Task<TagDto?> GetTagByIdAsync(int id);
-    Task<TagDto> AddTagAsync(CreateTagDto createTagDto);
-    Task UpdateTagAsync(UpdateTagDto updateTagDto);
-    Task DeleteTagAsync(int id);
+    
 }

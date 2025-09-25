@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Pb305OnionArchProductDemo.Application.AutoMapping;
 using Pb305OnionArchProductDemo.Application.Interfaces;
 using Pb305OnionArchProductDemo.Application.Services;
 using Pb305OnionArchTagDemo.Application.Interfaces;
@@ -12,5 +13,8 @@ public static class ApplicationServiceRegistration
     {
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<ITagService, TagService>();
+        services.AddScoped(typeof(ICrudService<,,,>), typeof(CrudService<,,,>));
+
+        services.AddAutoMapper(x => x.AddProfile<MappingProfile>());
     }
 }

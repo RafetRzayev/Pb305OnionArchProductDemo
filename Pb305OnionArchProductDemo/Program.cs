@@ -1,11 +1,13 @@
 using Pb305OnionArchProductDemo.Infrastructure;
+using Pb305OnionArchProductDemo.Infrastructure.DataContext;
 using Pb305OnionArchProductDemo.Application;
+using Microsoft.EntityFrameworkCore;
 
 namespace Pb305OnionArchProductDemo
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public async static Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,16 @@ namespace Pb305OnionArchProductDemo
                 app.UseSwaggerUI();
             }
 
+
+            using (var scope = app.Services.CreateScope())
+            {
+                //var dataInitializer = scope.ServiceProvider.GetRequiredService<DataInitializer>();
+                var appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+                await appDbContext.Database.MigrateAsync();
+                //await dataInitializer.Initialize();
+            }
+
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
@@ -35,7 +47,7 @@ namespace Pb305OnionArchProductDemo
 
             app.MapControllers();
 
-            app.Run();
+            await app.RunAsync();
         }
     }
 }

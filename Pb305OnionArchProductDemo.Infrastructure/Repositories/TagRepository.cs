@@ -1,67 +1,67 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Pb305OnionArchTagDemo.Domain.Interfaces;
+﻿using Pb305OnionArchTagDemo.Domain.Interfaces;
 using Pb305OnionArchProductDemo.Domain.Entities;
 using Pb305OnionArchProductDemo.Infrastructure.DataContext;
+using Pb305OnionArchProductDemo.Infrastructure.Repositories;
 
 namespace Pb305OnionArchTagDemo.Infrastructure.Repositories;
 
-public class TagRepository : ITagRepository
+public class TagRepository : EfCoreRepository<Tag>, ITagRepository
 {
     private readonly AppDbContext _dbContext;
 
-    public TagRepository(AppDbContext dbContext)
+    public TagRepository(AppDbContext dbContext) : base(dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task<Tag> AddTagAsync(Tag tag)
-    {
-        var entityEntry = await _dbContext.Tags.AddAsync(tag);
-        await _dbContext.SaveChangesAsync();
+    //public async Task<Tag> AddTagAsync(Tag tag)
+    //{
+    //    var entityEntry = await _dbContext.Tags.AddAsync(tag);
+    //    await _dbContext.SaveChangesAsync();
 
-        return entityEntry.Entity;
-    }
+    //    return entityEntry.Entity;
+    //}
 
-    public async Task DeleteTagAsync(int id)
-    {
-        var tag = _dbContext.Tags.Find(id);
+    //public async Task DeleteTagAsync(int id)
+    //{
+    //    var tag = _dbContext.Tags.Find(id);
 
-        if (tag != null)
-        {
-            _dbContext.Tags.Remove(tag);
-            await _dbContext.SaveChangesAsync();
+    //    if (tag != null)
+    //    {
+    //        _dbContext.Tags.Remove(tag);
+    //        await _dbContext.SaveChangesAsync();
 
-            return;
-        }
+    //        return;
+    //    }
 
-        throw new Exception($"Tag not found, with given id  : {id}");
-    }
+    //    throw new Exception($"Tag not found, with given id  : {id}");
+    //}
 
-    public async Task<IEnumerable<Tag>> GetAllTagsAsync()
-    {
-        var tags = await _dbContext.Tags.ToListAsync();
+    //public async Task<IEnumerable<Tag>> GetAllTagsAsync()
+    //{
+    //    var tags = await _dbContext.Tags.ToListAsync();
 
-        return tags;
-    }
+    //    return tags;
+    //}
 
-    public async Task<Tag?> GetTagByIdAsync(int id)
-    {
-        var tag = await _dbContext.Tags.FindAsync(id);
+    //public async Task<Tag?> GetTagByIdAsync(int id)
+    //{
+    //    var tag = await _dbContext.Tags.FindAsync(id);
 
-        return tag;
-    }
+    //    return tag;
+    //}
 
-    public async Task UpdateTagAsync(Tag tag)
-    {
-        var existingTag = await _dbContext
-            .Tags
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == tag.Id);
+    //public async Task UpdateTagAsync(Tag tag)
+    //{
+    //    var existingTag = await _dbContext
+    //        .Tags
+    //        .AsNoTracking()
+    //        .FirstOrDefaultAsync(x => x.Id == tag.Id);
 
-        if (existingTag == null)
-            throw new Exception($"Tag not found, with given id  : {tag.Id}");
+    //    if (existingTag == null)
+    //        throw new Exception($"Tag not found, with given id  : {tag.Id}");
 
-        _dbContext.Tags.Update(tag);
-        await _dbContext.SaveChangesAsync();
-    }
+    //    _dbContext.Tags.Update(tag);
+    //    await _dbContext.SaveChangesAsync();
+    //}
 }

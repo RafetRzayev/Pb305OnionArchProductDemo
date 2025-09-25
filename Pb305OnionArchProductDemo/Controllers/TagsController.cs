@@ -18,14 +18,14 @@ namespace Pb305OnionArchTagDemo.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllTags()
         {
-            var tags = await _tagService.GetAllTagsAsync();
+            var tags = await _tagService.GetAllAsync();
             return Ok(tags);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTagById(int id)
         {
-            var tag = await _tagService.GetTagByIdAsync(id);
+            var tag = await _tagService.GetByIdAsync(id);
 
             if (tag == null)
                 return NotFound();
@@ -36,7 +36,7 @@ namespace Pb305OnionArchTagDemo.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTag([FromBody] CreateTagDto createTagDto)
         {
-            var createdTag = await _tagService.AddTagAsync(createTagDto);
+            var createdTag = await _tagService.AddAsync(createTagDto);
 
             return CreatedAtAction(nameof(GetTagById), new { id = createdTag.Id }, createTagDto);
         }
@@ -44,14 +44,14 @@ namespace Pb305OnionArchTagDemo.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateTag([FromBody] UpdateTagDto updateTagDto)
         {
-            await _tagService.UpdateTagAsync(updateTagDto);
+            await _tagService.UpdateAsync(updateTagDto);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTag(int id)
         {
-            await _tagService.DeleteTagAsync(id);
+            await _tagService.DeleteAsync(id);
             return NoContent();
         }
     }

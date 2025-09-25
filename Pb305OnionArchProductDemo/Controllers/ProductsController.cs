@@ -19,14 +19,14 @@ namespace Pb305OnionArchProductDemo.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
         {
-            var products = await _productService.GetAllProductsAsync();
+            var products = await _productService.GetAllAsync();
             return Ok(products);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(int id)
         {
-            var product = await _productService.GetProductByIdAsync(id);
+            var product = await _productService.GetByIdAsync(id);
             
             if (product == null)
                 return NotFound();
@@ -37,7 +37,7 @@ namespace Pb305OnionArchProductDemo.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProduct([FromBody] CreateProductDto createProductDto)
         {
-            var createdProduct = await _productService.AddProductAsync(createProductDto);
+            var createdProduct = await _productService.AddAsync(createProductDto);
 
             return CreatedAtAction(nameof(GetProductById), new { id = createdProduct.Id }, createProductDto);
         }
@@ -45,14 +45,14 @@ namespace Pb305OnionArchProductDemo.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductDto updateProductDto)
         {
-            await _productService.UpdateProductAsync(updateProductDto);
+            await _productService.UpdateAsync(updateProductDto);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            await _productService.DeleteProductAsync(id);
+            await _productService.DeleteAsync(id);
             return NoContent();
         }
 
