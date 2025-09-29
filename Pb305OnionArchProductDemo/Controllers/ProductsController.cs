@@ -18,7 +18,7 @@ namespace Pb305OnionArchProductDemo.API.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
-        {
+        { 
             var products = await _productService.GetAllAsync();
             return Ok(products);
         }

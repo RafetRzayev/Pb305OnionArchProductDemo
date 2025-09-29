@@ -20,7 +20,16 @@ namespace Pb305OnionArchProductDemo
 
             builder.Services.AddInfrastructureServices(builder.Configuration);
             builder.Services.AddApplicationServices();
-
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyMethod()
+                               .AllowAnyHeader();
+                    });
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -30,7 +39,6 @@ namespace Pb305OnionArchProductDemo
                 app.UseSwaggerUI();
             }
 
-
             using (var scope = app.Services.CreateScope())
             {
                 //var dataInitializer = scope.ServiceProvider.GetRequiredService<DataInitializer>();
@@ -39,6 +47,8 @@ namespace Pb305OnionArchProductDemo
                 await appDbContext.Database.MigrateAsync();
                 //await dataInitializer.Initialize();
             }
+
+            app.UseCors("AllowAll"); // Apply the "AllowAll" policy
 
             app.UseHttpsRedirection();
 

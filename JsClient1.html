@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <button onclick="loadProducts()"> Load products</button>
+    <table>
+        <tr>
+            <td>Id</td>
+            <td>Name</td>
+            <td>Price</td>
+        </tr>
+    </table>
+</body>
+</html>
+
+<script>
+
+
+    async function loadProducts() {
+        try {
+            const response = await fetch('https://localhost:7278/api/Products');
+            const data = await response.json();
+
+            let table = document.querySelector('table');
+            table.innerHTML = `<tr><td>Id</td>
+                <td> Name</td >
+                    <td>Price</td></tr>`;
+            data.forEach(product => {
+                console.log(product);
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${product.id}</td><td>${product.name}</td><td>${product.price}</td>`;
+                table.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+</script>
